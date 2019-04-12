@@ -7,18 +7,6 @@
     "watch"             : false,
     "max_restarts"      : 10,
     "exec_interpreter"  : "node",
-    "exec_mode"         : "fork_mode",
-    "env": {
-      "RPC_HOST"        : "localhost",
-      "RPC_PORT"        : "8545",
-      "LISTENING_PORT"  : "30303",
-      "CONTACT_DETAILS" : "",
-      "WS_SERVER"       : "wss://rpc.ethstats.net",
-      "WS_SECRET"       : "see http://forum.ethereum.org/discussion/2112/how-to-add-yourself-to-the-stats-dashboard-its-not-automatic",
-      "VERBOSITY"       : 2
-    },
-    "env_production": {
-      "NODE_ENV"        : "production"
-    }
+    "exec_mode"         : "fork_mode"
   }
 ]

@@ -12,5 +12,7 @@ ADD . .
 
 RUN chown -R ethnetintel. .
 
+ENV NODE_ENVIRONMENT=production
 USER ethnetintel
-ENTRYPOINT ["pm2-runtime", "app.json", "--env", "production"]
+
+ENTRYPOINT ["pm2-runtime", "app.json"]
