@@ -4,12 +4,40 @@ Ethereum Network Intelligence API
 
 This is the backend service which runs along with ethereum and tracks the network status, fetches information through JSON-RPC and connects through WebSockets to [eth-netstats](https://github.com/cubedro/eth-netstats) to feed information. For full install instructions please read the [wiki](https://github.com/ethereum/wiki/wiki/Network-Status).
 
-
 ## Prerequisite
 * eth, geth or pyethapp
 * node
 * npm
 
+## Docker
+
+### Configuration (Environment Variables)
+
+To run the docker container against your client, you can pass in env variables
+
+```
+docker run \
+    --net host \
+    -e RPC_HOST=localhost \
+    -e RPC_PORT=8545 \
+    -e LISTENING_PORT=30303 \
+    -e INSTANCE_NAME=MyLocalMachine \
+    -e WS_SERVER=wss://rpc.ethstats.net
+    -e WS_SECRET=<secret>
+    -it goerli/ethstats-client
+```
+
+Alternatively, you can pass in an `--env-file` to Docker with all the above set.
+
+### Configuration (app.json)
+
+You can also overwrite the `app.json` file to pass in configuration, for example:
+ 
+```
+docker run \
+    -v <path to app.json>:/home/ethnetintel/ethstats-client/app.json \
+    -it goerli/ethstats-client
+```
 
 ## Installation on an Ubuntu EC2 Instance
 
@@ -18,31 +46,8 @@ Fetch and run the build shell. This will install everything you need: latest eth
 ```bash
 bash <(curl https://raw.githubusercontent.com/cubedro/eth-net-intelligence-api/master/bin/build.sh)
 ```
-## Installation as docker container (optional)
 
-There is a `Dockerfile` in the root directory of the repository. Please read through the header of said file for
-instructions on how to build/run/setup. Configuration instructions below still apply.
-
-## Configuration
-
-Configure the app modifying [processes.json](/eth-net-intelligence-api/blob/master/processes.json). Note that you have to modify the backup processes.json file located in `./bin/processes.json` (to allow you to set your env vars without being rewritten when updating).
-
-```json
-"env":
-	{
-		"NODE_ENV"        : "production", // tell the client we're in production environment
-		"RPC_HOST"        : "localhost", // eth JSON-RPC host
-		"RPC_PORT"        : "8545", // eth JSON-RPC port
-		"LISTENING_PORT"  : "30303", // eth listening port (only used for display)
-		"INSTANCE_NAME"   : "", // whatever you wish to name your node
-		"CONTACT_DETAILS" : "", // add your contact details here if you wish (email/skype)
-		"WS_SERVER"       : "wss://rpc.ethstats.net", // path to eth-netstats WebSockets api server
-		"WS_SECRET"       : "see http://forum.ethereum.org/discussion/2112/how-to-add-yourself-to-the-stats-dashboard-its-not-automatic", // WebSockets api server secret used for login
-		"VERBOSITY"       : 2 // Set the verbosity (0 = silent, 1 = error, warn, 2 = error, warn, info, success, 3 = all logs)
-	}
-```
-
-## Run
+## Run Local
 
 Run it using pm2:
 
@@ -60,6 +65,11 @@ To update the API client use the following command:
 ```
 
 It will stop the current netstats client processes, automatically detect your ethereum implementation and version, update it to the latest develop build, update netstats client and reload the processes.
+
+## Notes
+
+ - For the WS_SECRET, see http://forum.ethereum.org/discussion/2112/how-to-add-yourself-to-the-stats-dashboard-its-not-automatic
+ - Ensure that your container has connectivity to your Ethereum client.
 
 [travis-image]: https://travis-ci.org/cubedro/eth-net-intelligence-api.svg
 [travis-url]: https://travis-ci.org/cubedro/eth-net-intelligence-api
