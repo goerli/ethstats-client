@@ -32,29 +32,20 @@
 ## If you now want to deploy a new client version, just redo the second step.
 
 
-FROM debian
+FROM node:14-alpine
 
-RUN apt-get update &&\
-    apt-get install -y curl git-core &&\
-    curl -sL https://deb.nodesource.com/setup_14.x | bash - &&\
-    apt-get update &&\
-    apt-get install -y nodejs
-
-RUN apt-get update &&\
-    apt-get install -y build-essential
-
-RUN useradd -m ethnetintel
-
-RUN cd /home/ethnetintel &&\
-    git clone https://github.com/cubedro/eth-net-intelligence-api &&\
-    cd eth-net-intelligence-api &&\
-    npm install &&\
-    npm install -g pm2
-
-RUN chown -R ethnetintel. /home/ethnetintel
-
-USER ethnetintel
+RUN apk update && apk add git ca-certificates
+RUN adduser -S ethnetintel
 
 WORKDIR /home/ethnetintel/eth-net-intelligence-api
+
+ADD package.json .
+RUN npm install && npm install -g pm2
+
+ADD . .
+
+RUN chown -R ethnetintel. .
+
+USER ethnetintel
 
 CMD [ "pm2-runtime", "app.json" ]
